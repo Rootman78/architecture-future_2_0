@@ -15,13 +15,13 @@ Container_Boundary(FutureSystem, "Future System") {
   System(MedSystem, "Портал медицинских данных", "Продукты медицинских данных")
   Person(Operator, "Оператор", "Добавляет/получает данные из системы")
   Person(User, "Пользователь данных", "Получает данные, настраивает формат получения")
-  Container(OperatorApp, "Клиентский интерфейс оператора", "PowerBuilder", "Позволяет загружать операторам медецинскией данные")
+  Container(OperatorApp, "Клиентский интерфейс оператора", "PowerBuilder", "Позволяет загружать операторам медицинские данные")
 
   Container(MQ, "Интеграционная шина", "Apache Camel", "Корпоративная шина")
-  Container(BI , "BI-система", "Power BI", "Система биззнес анализа полученных данных")
+  Container(BI , "BI-система", "Power BI", "Система бизнес анализа полученных данных")
   Container(AL, "ИИ-сервисы", "Python", "ИИ-сервисы для работы с медицинскими данными")
   Container(Fintex, "Финтех-сервисы", "Golang,Java", "Финтех-сервисы в виде отдельной компании с банковской лицензией")
-  Container(Pharm, "Фармоцефтическая компания", "", "Идентификация клиента, открытие депозита")
+  Container(Pharm, "Фармацевтическая компания", "", "Идентификация клиента, открытие депозита")
 
   Container(Electronic, "Производитель электроники", "", "Производит электронику для медицинского оборудования")
   Container(Internal, "Внутренние сервисы", "", "Учет внутренних финансовых данных и данных клиентов")
@@ -32,7 +32,7 @@ Container_Boundary(FutureSystem, "Future System") {
    Container_Boundary(PortalSystem, "DataMesh") {
    ContainerDb(FinData, "Финансовые данные", "PosgreSQL", "Данные банка и прочих финансовых систем")
    ContainerDb(ClientData, "Клиентские данные", "PosgreSQL", "Данные клиентов компании")
-   ContainerDb(PharmData, "Фармацефтические данные", "PosgreSQL", "Данные фармацефтических компаний")
+   ContainerDb(PharmData, "Фармацевтические данные", "PosgreSQL", "Данные фармацевтических компаний")
    ContainerDb(ElectronicData, "Данные производителя электроники", "PosgreSQL", "Данные производителя электроники")
    }
 
@@ -42,9 +42,11 @@ Container_Boundary(FutureSystem, "Future System") {
 
 Rel(Operator, OperatorApp, "Медицинские данные, снимки")
 Rel(OperatorApp, MedSystem, "Медицинские данные, снимки")
+Rel(Operator, Internal, "Данные клиентов")
+Rel(Operator, Fintex, "Данные клиентов")
 Rel(MQ,MedSystem, "Передача медицинских данных")
 Rel(Electronic, MQ, "Передача данных производителя электроники")
-Rel(Pharm, MQ, "Передача данных формоцефтических компаний")
+Rel(Pharm, MQ, "Передача данных фармацевтических компаний")
 Rel(PortalSystem, BI, "Передача запрашиваемых срезов данных")
 Rel(MQ, PortalSystem, "Передача не медицинских данных")
 Rel(MedSystem, BI, "Получения среза медицинских данных")
