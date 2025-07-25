@@ -1,0 +1,60 @@
+@startuml
+title Система медицинских компаний Будущее 2.0 диаграмма контейнеров
+
+top to bottom direction
+
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Component.puml
+
+
+
+System(FutureSystem, "Будущее 2.0", "Медицинская компания")
+
+
+Container_Boundary(FutureSystem, "Future System") {
+  System(PortalSystem, "Портал самообслуживания", "Продукты не медицинских данных и интегрированных систем")
+  System(MedSystem, "Портал медицинских данных", "Продукты медицинских данных")
+  Person(Operator, "Оператор", "Добавляет/получает данные из системы")
+  Person(User, "Пользователь данных", "Получает данные, настраивает формат получения")
+  Container(OperatorApp, "Клиентский интерфейс оператора", "PowerBuilder", "Позволяет загружать операторам медецинскией данные")
+
+  Container(MQ, "Интеграционная шина", "Apache Camel", "Корпоративная шина")
+  Container(BI , "BI-система", "Power BI", "Система бизнес анализа полученных данных")
+  Container(AL, "ИИ-сервисы", "Python", "ИИ-сервисы для работы с медицинскими данными")
+  Container(Fintex, "Финтех-сервисы", "Golang,Java", "Финтех-сервисы в виде отдельной компании с банковской лицензией")
+  Container(Pharm, "Фармацевтическая компания", "", "Идентификация клиента, открытие депозита")
+
+  Container(Electronic, "Производитель электроники", "", "Производит электронику для медицинского оборудования")
+  Container(Internal, "Внутренние сервисы", "", "Учет внутренних финансовых данных и данных клиентов")
+   Container_Boundary(MedSystem, "DataMesh") {
+   ContainerDb(MedDWH, "Домен 'Медицинские данные'", "MSSQL", "Хранит медицинские данные системы")
+   ContainerDb(ALDWH, "Домен 'Данные настройки ИИ'", "MSSQL", "Хранит настройки ИИ, необходимые для обработки медицинских данных")
+   }
+   Container_Boundary(PortalSystem, "DataMesh") {
+   ContainerDb(FinData, "Домен 'Финансовые данные'", "PosgreSQL", "Данные банка и прочих финансовых систем")
+   ContainerDb(ClientData, "Домен 'Клиентские данные'", "PosgreSQL", "Данные клиентов компании")
+   ContainerDb(PharmData, "Домен 'Данные фармацевтических компаний'", "PosgreSQL", "Данные фармацевтических компаний")
+   ContainerDb(ElectronicData, "Домен 'Данные производителя электроники'", "PosgreSQL", "Данные производителя электроники")
+   }
+
+
+}
+
+
+Rel(Operator, OperatorApp, "Медицинские данные, снимки")
+Rel(OperatorApp, MedSystem, "Медицинские данные, снимки")
+Rel(MQ,MedSystem, "Передача медицинских данных")
+Rel(Electronic, MQ, "Передача данных производителя электроники")
+Rel(Pharm, MQ, "Передача данных фармацевтических компаний")
+Rel(PortalSystem, BI, "Передача запрашиваемых срезов данных")
+Rel(MQ, PortalSystem, "Передача не медицинских данных")
+Rel(MedSystem, User, "Получения среза медицинских данных")
+Rel(AL, MQ, "Получения среза медицинских данных")
+Rel(BI,User , "Получения среза данных")
+Rel(Internal, MQ , "Добавление/изменение клиентских данных")
+Rel(Fintex, MQ , "Передача финансовых данных")
+
+
+
+
+
+@enduml
